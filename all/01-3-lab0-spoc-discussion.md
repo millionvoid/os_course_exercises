@@ -78,7 +78,24 @@ gete之后32位分别是16位的3和16位的2，由于x86为小端模式，因�
 
 1. 请在ucore中找一段你认为难度适当的AT&T格式X86汇编代码，尝试解释其含义。
 
-   ![捕获](D:\3-Spring\Operating_Systems\作业\我的仓库\all\捕获.PNG)
+   ```c
+   lab1_print_cur_status(void) {
+       static int round = 0;
+       uint16_t reg1, reg2, reg3, reg4;
+       asm volatile (
+               "mov %%cs, %0;"
+               "mov %%ds, %1;"
+               "mov %%es, %2;"
+               "mov %%ss, %3;"
+               : "=m"(reg1), "=m"(reg2), "=m"(reg3), "=m"(reg4));
+       cprintf("%d: @ring %d\n", round, reg1 & 3);
+       cprintf("%d:  cs = %x\n", round, reg1);
+       cprintf("%d:  ds = %x\n", round, reg2);
+       cprintf("%d:  es = %x\n", round, reg3);
+       cprintf("%d:  ss = %x\n", round, reg4);
+       round ++;
+   }
+   ```
 
    如图的汇编代码，表示将cs、ds、es、ss四个寄存器里的内容分别赋给reg1-reg4，并在之后的语言代码中将其输出到屏幕
 
